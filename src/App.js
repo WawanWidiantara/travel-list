@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 
-const initialItems = [
-  { id: 1, name: "Sunglasses", quantity: 2, packed: false },
-  { id: 2, name: "Passport", quantity: 2, packed: true },
-  { id: 3, name: "Passport", quantity: 2, packed: false },
-];
-
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItem(item) {
+    setItems((items) => [...items, item]);
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItem={handleAddItem} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -21,23 +21,25 @@ function Logo() {
   return <h1>🌴 Far Away 💼</h1>;
 }
 
-function Form() {
-  const [items, setItems] = useState("");
+function Form({ onAddItem }) {
+  const [names, setNames] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   function handleSubmit(event) {
     event.preventDefault();
     const newItem = {
       id: Date.now(),
-      name: items,
+      name: names,
       quantity: quantity,
       packed: false,
     };
 
+    onAddItem(newItem);
+
     console.log(newItem);
 
-    if (!items) return;
-    setItems("");
+    if (!names) return;
+    setNames("");
     setQuantity(1);
   }
 
@@ -59,19 +61,19 @@ function Form() {
       <input
         type="text"
         placeholder="Item ..."
-        value={items}
-        onChange={(e) => setItems(e.target.value)}
+        value={names}
+        onChange={(e) => setNames(e.target.value)}
       />
       <button>Add</button>
     </form>
   );
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Items item={item} key={item.id} />
         ))}
       </ul>
@@ -93,7 +95,7 @@ function Items({ item }) {
 function Stats() {
   return (
     <footer className="stats">
-      <em>💼 You have X items on your list, and you already packed X (X%)</em>
+      <em>💼 You have X names on your list, and you already packed X (X%)</em>
     </footer>
   );
 }
