@@ -28,7 +28,7 @@ export default function App() {
         onRemoveItem={handleRemoveItem}
         onToggleItem={handleToggleItem}
       />
-      <Stats />
+      <Stats items={items} />
     </div>
   );
 }
@@ -114,10 +114,26 @@ function Items({ item, onRemoveItem, onToggleItem }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  const numItem = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const precentage = Math.round((numPacked / numItem) * 100);
+
+  if (!numItem)
+    return (
+      <footer className="stats">
+        <em>You have no items in your list, what are you waiting for?!</em>
+      </footer>
+    );
+
   return (
     <footer className="stats">
-      <em>💼 You have X names on your list, and you already packed X (X%)</em>
+      <em>
+        {numPacked === numItem
+          ? "You are ready to go!"
+          : `💼 You have ${numItem} names on your list, and you already packed
+        ${numPacked} (${precentage}%)`}
+      </em>
     </footer>
   );
 }
